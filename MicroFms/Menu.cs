@@ -81,8 +81,7 @@ public class Menu
 
     private static void ShowUnknowCommandMessage()
     {
-        Console.WriteLine("\nPress any key to continue");
-        Console.ReadKey();
+        Console.WriteLine("\nUnknow command");
     }
 
     private delegate void Operation();

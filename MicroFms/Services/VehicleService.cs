@@ -1,4 +1,6 @@
-﻿namespace MicroFms;
+﻿using System.Xml.Linq;
+
+namespace MicroFms;
 
 public class VehicleService
 {
@@ -6,15 +8,24 @@ public class VehicleService
 
     public void AddVehicle()
     {
-        var index = vehicles.Count;
+        var index = 0;
         var name = EnterName();
         var vinCode = EnterVinCode();
+        var isDeleted = false;
+
+        if (vehicles.Count > 0)
+        {
+            var lastRecord = vehicles[vehicles.Count - 1];
+            index = lastRecord.Id + 1;
+        }
 
         if (name.Length != 0 && vinCode.Length != 0)
         {
-            var vehicle = new Vehicle(index, name, vinCode);
+            var vehicle = new Vehicle(index, name, vinCode, isDeleted);
 
             vehicles.Add(vehicle);
+
+            Console.WriteLine($"Vehicle {name} VIN: {vinCode} successfull added to list");
         }
         else
         {
@@ -32,18 +43,23 @@ public class VehicleService
         {
             var name = EnterName();
             var vinCode = EnterVinCode();
+            var isExists = false;
 
             for (int i = 0; i < vehicles.Count; i++)
             {
-                if (vehicles[i].Name == name && vehicles[i].VinCode == vinCode)
+
+                if (vehicles[i].Name == name && vehicles[i].VinCode == vinCode && !vehicles[i].IsDeleted)
                 {
-                    vehicles.Remove(vehicles[i]);
+                    vehicles[i].IsDeleted = true;
+                    isExists = true;
                     Console.WriteLine($"Vehicle with name = {name} and vincode = {vinCode} is removed from vehicle list");
+                    break;
                 }
-                else
-                {
-                    Console.WriteLine($"Vehicle with name = {name} and vincode = {vinCode} was not found");
-                }
+            }
+
+            if (!isExists)
+            {
+                Console.WriteLine($"Vehicle with name = {name} and vincode = {vinCode} was not found");
             }
         }
     }
@@ -51,6 +67,7 @@ public class VehicleService
     public void ShowVehicleList()
     {
         Console.WriteLine($"\nVehicles:\n");
+        var count = 1;
 
         if (vehicles.Count == 0)
         {
@@ -60,7 +77,11 @@ public class VehicleService
         {
             for (var i = 0; i < vehicles.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {vehicles[i].Name} {vehicles[i].VinCode}");
+                if (!vehicles[i].IsDeleted)
+                {
+                    Console.WriteLine($"{count}. {vehicles[i].Name} {vehicles[i].VinCode}");
+                    count++;
+                }
             }
         }
     }

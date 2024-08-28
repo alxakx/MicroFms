@@ -1,4 +1,6 @@
-﻿namespace MicroFms;
+﻿using System.Xml.Linq;
+
+namespace MicroFms;
 
 public class DriverService
 {
@@ -6,15 +8,24 @@ public class DriverService
 
     public void AddDriver()
     {
-        var index = drivers.Count;
+        var index = 0;
         var firstName = EnterFirstName();
         var lastName = EnterLastName();
+        var isDeleted = false;
+
+        if (drivers.Count > 0)
+        {
+            var lastRecord = drivers[drivers.Count - 1];
+            index = lastRecord.Id + 1;
+        }
 
         if (firstName.Length != 0 && lastName.Length != 0)
         {
-            var driver = new Driver(index, firstName, lastName);
+            var driver = new Driver(index, firstName, lastName, isDeleted);
 
             drivers.Add(driver);
+
+            Console.WriteLine($"Diver {firstName} {lastName} successfull added to list");
         }
         else
         {
@@ -32,18 +43,22 @@ public class DriverService
         {
             var firstName = EnterFirstName();
             var lastName = EnterLastName();
+            var isExists = false;
 
             for (int i = 0; i < drivers.Count; i++)
             {
-                if (drivers[i].FirstName == firstName && drivers[i].LastName == lastName)
+                if (drivers[i].FirstName == firstName && drivers[i].LastName == lastName && !drivers[i].IsDeleted)
                 {
-                    drivers.Remove(drivers[i]);
+                    drivers[i].IsDeleted = true;
+                    isExists = true;
                     Console.WriteLine($"Driver with name = {firstName} and Lastname = {lastName} is removed from driver list");
+                    break;
                 }
-                else
-                {
-                    Console.WriteLine($"Driver with name = {firstName} and lastname = {lastName} was not found");
-                }
+            }
+
+            if (!isExists)
+            {
+                Console.WriteLine($"Driver with name = {firstName} and lastname = {lastName} was not found");
             }
         }
     }
@@ -51,6 +66,7 @@ public class DriverService
     public void ShowDriverList()
     {
         Console.WriteLine($"\nDrivers:\n");
+        var count = 1;
 
         if (drivers.Count == 0)
         {
@@ -60,7 +76,11 @@ public class DriverService
         {
             for (var i = 0; i < drivers.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {drivers[i].FirstName} {drivers[i].LastName}");
+                if (!drivers[i].IsDeleted)
+                {
+                    Console.WriteLine($"{count}. {drivers[i].FirstName} {drivers[i].LastName}");
+                    count++;
+                }
             }
         }
     }

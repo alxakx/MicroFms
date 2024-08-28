@@ -2,11 +2,12 @@
 
 public class Vehicle
 {
-    public Vehicle(int id, string name, string vinCode)
+    public Vehicle(int id, string name, string vinCode, bool isDeleted)
     {
         Id = id;
         Name = name;
         VinCode = vinCode;
+        IsDeleted = isDeleted;
     }
 
     public int Id { get; }
@@ -14,4 +15,6 @@ public class Vehicle
     public string Name { get; }
 
     public string VinCode { get; }
+
+    public bool IsDeleted { get; set; }
 }
