@@ -1,6 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using MicroFms.Entities;
 
-namespace MicroFms;
+namespace MicroFms.Services;
 
 public class VehicleService
 {
@@ -84,6 +84,11 @@ public class VehicleService
                 }
             }
         }
+    }
+
+    public List<Vehicle> GetVehicles()
+    {
+        return vehicles;
     }
 
     private static string EnterName()

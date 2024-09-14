@@ -1,6 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using MicroFms.Entities;
 
-namespace MicroFms;
+namespace MicroFms.Services;
 
 public class DriverService
 {
@@ -83,6 +83,11 @@ public class DriverService
                 }
             }
         }
+    }
+
+    public List<Driver> GetDrivers()
+    {
+        return drivers;
     }
 
     private static string EnterFirstName()

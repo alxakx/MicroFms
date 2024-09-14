@@ -1,4 +1,4 @@
-﻿namespace MicroFms;
+﻿namespace MicroFms.Entities;
 
 public class Driver
 {
