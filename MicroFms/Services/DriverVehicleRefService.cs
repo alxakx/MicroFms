@@ -2,17 +2,17 @@
 
 namespace MicroFms.Services;
 
-internal class DriverVehicleRefService
+public class DriverVehicleRefService
 {
     private List<DriverVehicleRef> driverVehicleRefs = new();
-   /* private DriverService _driverService;
+    private DriverService _driverService;
     private VehicleService _vehicleService;
 
-    public DriverVehicleRefService (DriverService driverService,  VehicleService vehicleService)
+    public DriverVehicleRefService(DriverService driverService, VehicleService vehicleService)
     {
         _driverService = driverService;
         _vehicleService = vehicleService;
-    }*/
+    }
 
     public void ShowRecords()
     {

@@ -9,43 +9,49 @@ public class DriverController
     private const string RemoveDriverCommand = "2";
     private const string ShowDriversListCommand = "3";
 
-    private readonly BaseController _baseController = new(); 
-    private readonly DriverService _driverService = new();
+    private readonly DriverService _driverService;
+
+    public DriverController(DriverService driverService)
+    {
+        _driverService = driverService;
+    }
 
     public void DisplayDriverMenu()
     {
-        Console.Clear();
-        Console.CursorTop = 5;
-        Console.WriteLine("List of commands:\n" +
-            $"\n{AddDriverCommand} - Add new driver to drivers list" +
-            $"\n{RemoveDriverCommand} - Remove driver from drivers list" +
-            $"\n{ShowDriversListCommand} - Show drivers list" +
-            $"\n\n{ExitCommand} - Return to BaseMenu");
-
-        Console.Write("Enter selected command: ");
-        var userSelect = Console.ReadLine();
-
-        switch (userSelect)
+        while (true)
         {
-            case AddDriverCommand:
-                ExecuteOperation(_driverService.AddDriver, null);
-                break;
+            Console.Clear();
+            Console.CursorTop = 5;
+            Console.WriteLine("List of commands:\n" +
+                $"\n{AddDriverCommand} - Add new driver to drivers list" +
+                $"\n{RemoveDriverCommand} - Remove driver from drivers list" +
+                $"\n{ShowDriversListCommand} - Show drivers list" +
+                $"\n\n{ExitCommand} - Return to BaseMenu");
 
-            case RemoveDriverCommand:
-                ExecuteOperation(_driverService.RemoveDriver, null);
-                break;
+            Console.Write("Enter selected command: ");
+            var userSelect = Console.ReadLine();
 
-            case ShowDriversListCommand:
-                ExecuteOperation(_driverService.ShowDriverList, null);
-                break;
+            switch (userSelect)
+            {
+                case AddDriverCommand:
+                    ExecuteOperation(_driverService.AddDriver);
+                    break;
 
-            case ExitCommand:
-                _baseController.DisplayMenu();
-                break;
+                case RemoveDriverCommand:
+                    ExecuteOperation(_driverService.RemoveDriver);
+                    break;
 
-            default:
-                ExecuteOperation(ShowUnknowCommandMessage, null);
-                break;
+                case ShowDriversListCommand:
+                    ExecuteOperation(_driverService.ShowDriverList);
+                    break;
+
+                case ExitCommand:
+                    return;
+
+                default:
+                    ExecuteOperation(ShowUnknowCommandMessage);
+                    break;
+            }
         }
     }
 
@@ -62,12 +68,10 @@ public class DriverController
 
     private delegate void Operation();
 
-    private void ExecuteOperation(Operation operation1, Operation? operation2)
+    private void ExecuteOperation(Operation operation1)
     {
         Console.Clear();
         operation1();
-        operation2?.Invoke();
         ShowContinueMessage();
-        DisplayDriverMenu();
     }
 }

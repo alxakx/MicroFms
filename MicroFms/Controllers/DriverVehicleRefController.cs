@@ -9,43 +9,53 @@ public class DriverVehicleRefController
     private const string RemoveRecordCommand = "2";
     private const string ShowRecordsCommand = "3";
 
-    private readonly BaseController _baseController = new();
-    private readonly DriverVehicleRefService _driverVehicleRefService = new();
+    private readonly DriverService _driverService;
+    private readonly VehicleService _vehicleService;
+    private readonly DriverVehicleRefService _driverVehicleRefService;
+
+    public DriverVehicleRefController(DriverService driverService, VehicleService vehicleService, DriverVehicleRefService driverVehicleRefService)
+    {
+        _driverService = driverService;
+        _vehicleService = vehicleService;
+        _driverVehicleRefService = driverVehicleRefService;
+    }
 
     public void DisplayReferenseMenu()
     {
-        Console.Clear();
-        Console.CursorTop = 5;
-        Console.WriteLine("List of commands:\n" +
-            $"\n{AddRecordCommand} - Add new record to referense list" +
-            $"\n{RemoveRecordCommand} - Remove record from referense list" +
-            $"\n{ShowRecordsCommand} - Show referense List" +
-            $"\n\n{ExitCommand} - Return to BaseMenu");
-
-        Console.Write("Enter selected command: ");
-        var userSelect = Console.ReadLine();
-
-        switch (userSelect)
+        while (true)
         {
-            case AddRecordCommand:
-                ExecuteOperation(_driverVehicleRefService.AddRecord);
-                break;
+            Console.Clear();
+            Console.CursorTop = 5;
+            Console.WriteLine("List of commands:\n" +
+                $"\n{AddRecordCommand} - Add new record to referense list" +
+                $"\n{RemoveRecordCommand} - Remove record from referense list" +
+                $"\n{ShowRecordsCommand} - Show referense List" +
+                $"\n\n{ExitCommand} - Return to BaseMenu");
 
-            case RemoveRecordCommand:
-                ExecuteOperation(_driverVehicleRefService.RemoveRecordByKey);
-                break;
+            Console.Write("Enter selected command: ");
+            var userSelect = Console.ReadLine();
 
-            case ShowRecordsCommand:
-                ExecuteOperation(_driverVehicleRefService.ShowRecords);
-                break;
+            switch (userSelect)
+            {
+                case AddRecordCommand:
+                    ExecuteOperation(_driverVehicleRefService.AddRecord);
+                    break;
 
-            case ExitCommand:
-                _baseController.DisplayMenu();
-                break;
+                case RemoveRecordCommand:
+                    ExecuteOperation(_driverVehicleRefService.RemoveRecordByKey);
+                    break;
 
-            default:
-                ExecuteOperation(ShowUnknowCommandMessage);
-                break;
+                case ShowRecordsCommand:
+                    ExecuteOperation(_driverVehicleRefService.ShowRecords);
+                    break;
+
+                case ExitCommand:
+                    return;
+
+                default:
+                    ExecuteOperation(ShowUnknowCommandMessage);
+                    break;
+            }
         }
     }
 
@@ -67,6 +77,5 @@ public class DriverVehicleRefController
         Console.Clear();
         operation1();
         ShowContinueMessage();
-        DisplayReferenseMenu();
     }
 }

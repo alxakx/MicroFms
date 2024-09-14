@@ -9,43 +9,49 @@ public class VehicleController
     private const string RemoveVehicleCommand = "2";
     private const string ShowVehiclesListCommand = "3";
 
-    private readonly BaseController _baseController = new();
-    private readonly VehicleService _vehicleService = new();
+    private readonly VehicleService _vehicleService;
+
+    public VehicleController(VehicleService vehicleService)
+    {
+        _vehicleService = vehicleService;
+    }
 
     public void DisplayVehicleMenu()
     {
-        Console.Clear();
-        Console.CursorTop = 5;
-        Console.WriteLine("List of commands:\n" +
-            $"\n{AddVehicleCommand} - Add new vehicle to vehicle list" +
-            $"\n{RemoveVehicleCommand} - Remove vehicle from vehicle list" +
-            $"\n{ShowVehiclesListCommand} - Show vehicle List" +
-            $"\n\n{ExitCommand} - Return to BaseMenu");
-
-        Console.Write("Enter selected command: ");
-        var userSelect = Console.ReadLine();
-
-        switch (userSelect)
+        while (true)
         {
-            case AddVehicleCommand:
-                ExecuteOperation(_vehicleService.AddVehicle);
-                break;
+            Console.Clear();
+            Console.CursorTop = 5;
+            Console.WriteLine("List of commands:\n" +
+                $"\n{AddVehicleCommand} - Add new vehicle to vehicle list" +
+                $"\n{RemoveVehicleCommand} - Remove vehicle from vehicle list" +
+                $"\n{ShowVehiclesListCommand} - Show vehicle List" +
+                $"\n\n{ExitCommand} - Return to BaseMenu");
 
-            case RemoveVehicleCommand:
-                ExecuteOperation(_vehicleService.RemoveVehicle);
-                break;
+            Console.Write("Enter selected command: ");
+            var userSelect = Console.ReadLine();
 
-            case ShowVehiclesListCommand:
-                ExecuteOperation(_vehicleService.ShowVehicleList);
-                break;
+            switch (userSelect)
+            {
+                case AddVehicleCommand:
+                    ExecuteOperation(_vehicleService.AddVehicle);
+                    break;
 
-            case ExitCommand:
-                _baseController.DisplayMenu();
-                break;
+                case RemoveVehicleCommand:
+                    ExecuteOperation(_vehicleService.RemoveVehicle);
+                    break;
 
-            default:
-                ExecuteOperation(ShowUnknowCommandMessage);
-                break;
+                case ShowVehiclesListCommand:
+                    ExecuteOperation(_vehicleService.ShowVehicleList);
+                    break;
+
+                case ExitCommand:
+                    return;
+
+                default:
+                    ExecuteOperation(ShowUnknowCommandMessage);
+                    break;
+            }
         }
     }
 
@@ -67,6 +73,5 @@ public class VehicleController
         Console.Clear();
         operation1();
         ShowContinueMessage();
-        DisplayVehicleMenu();
     }
 }
