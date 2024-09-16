@@ -32,7 +32,7 @@ public class DriverVehicleRefController
                 $"\n{ShowRecordsCommand} - Show referense List" +
                 $"\n\n{ExitCommand} - Return to BaseMenu");
 
-            Console.Write("Enter selected command: ");
+            Console.Write("\nEnter selected command: ");
             var userSelect = Console.ReadLine();
 
             switch (userSelect)

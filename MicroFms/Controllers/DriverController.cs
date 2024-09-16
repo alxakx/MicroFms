@@ -28,7 +28,7 @@ public class DriverController
                 $"\n{ShowDriversListCommand} - Show drivers list" +
                 $"\n\n{ExitCommand} - Return to BaseMenu");
 
-            Console.Write("Enter selected command: ");
+            Console.Write("\nEnter selected command: ");
             var userSelect = Console.ReadLine();
 
             switch (userSelect)
