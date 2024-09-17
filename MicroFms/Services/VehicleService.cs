@@ -4,7 +4,15 @@ namespace MicroFms.Services;
 
 public class VehicleService
 {
-    private List<Vehicle> vehicles = [];
+    private List<Vehicle> vehicles = [
+        new Vehicle(0, "pickup", "KPT12345678KP0377", false),
+        new Vehicle(1, "pickup", "JR032756712JA4551", false),
+        new Vehicle(2, "truck", "JK26548212X7JA546", false),
+        new Vehicle(3, "truck", "XTC1528543K2RU345", false),
+        new Vehicle(4, "truck", "XTC1534574N425735", false),
+        new Vehicle(5, "truck", "XTC2566312N462758", false),
+        new Vehicle(6, "thuck", "XTC4666254M765278", false),
+    ];
 
     public void AddVehicle()
     {

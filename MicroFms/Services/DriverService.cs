@@ -4,7 +4,13 @@ namespace MicroFms.Services;
 
 public class DriverService
 {
-    private List<Driver> drivers = [];
+    private List<Driver> drivers = [
+        new Driver(0, "John", "Smith", false),
+        new Driver(1, "Matt", "Sew", false),
+        new Driver(2, "Andrew", "Hodson", false),
+        new Driver(3, "Olaf", "Bad", false),
+        new Driver(4, "Kris", "Little", false),
+        ];
 
     public void AddDriver()
     {
