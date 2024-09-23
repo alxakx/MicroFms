@@ -14,11 +14,9 @@ public class VehicleService
         new Vehicle(6, "thuck", "XTC4666254M765278", false),
     ];
 
-    public void AddVehicle()
+    public Vehicle? AddVehicle(string name, string vinCode)
     {
         var index = 0;
-        var name = EnterName();
-        var vinCode = EnterVinCode();
         var isDeleted = false;
 
         if (vehicles.Count > 0)
@@ -33,83 +31,40 @@ public class VehicleService
 
             vehicles.Add(vehicle);
 
-            Console.WriteLine($"Vehicle {name} VIN: {vinCode} successfull added to list");
+            return vehicle;
         }
         else
         {
-            Console.WriteLine($"\nEntered data is incorrected");
+            return null;
         }
     }
 
-    public void RemoveVehicle()
+    public Vehicle? RemoveVehicle(int vehicleId)
     {
-        if (vehicles.Count == 0)
+        for (int i = 0; i < vehicles.Count; i++)
         {
-            Console.WriteLine($"\nVehicle list is empty\n");
-        }
-        else
-        {
-            var name = EnterName();
-            var vinCode = EnterVinCode();
-            var isExists = false;
-
-            for (int i = 0; i < vehicles.Count; i++)
+            if (vehicles[i].Id == vehicleId && !vehicles[i].IsDeleted)
             {
-
-                if (vehicles[i].Name == name && vehicles[i].VinCode == vinCode && !vehicles[i].IsDeleted)
-                {
-                    vehicles[i].IsDeleted = true;
-                    isExists = true;
-                    Console.WriteLine($"Vehicle with name = {name} and vincode = {vinCode} is removed from vehicle list");
-                    break;
-                }
-            }
-
-            if (!isExists)
-            {
-                Console.WriteLine($"Vehicle with name = {name} and vincode = {vinCode} was not found");
+                vehicles[i].IsDeleted = true;
+                return vehicles[i];
             }
         }
+
+        return null;
     }
 
-    public void ShowVehicleList()
+    public Vehicle? FindVehicle(string name, string vinCode)
     {
-        Console.WriteLine($"\nVehicles:\n");
-        var count = 1;
+        return vehicles.Where(vehicle => vehicle.Name == name && vehicle.VinCode == vinCode).FirstOrDefault();
+    }
 
-        if (vehicles.Count == 0)
-        {
-            Console.WriteLine("\nVehicle list is empty\n");
-        }
-        else
-        {
-            for (var i = 0; i < vehicles.Count; i++)
-            {
-                if (!vehicles[i].IsDeleted)
-                {
-                    Console.WriteLine($"{count}. {vehicles[i].Name} {vehicles[i].VinCode}");
-                    count++;
-                }
-            }
-        }
+    public bool IsEmpty()
+    {
+        return vehicles.Count == 0;
     }
 
     public List<Vehicle> GetVehicles()
     {
         return vehicles;
-    }
-
-    private static string EnterName()
-    {
-        Console.Write("Enter vehicle name: ");
-
-        return Console.ReadLine();
-    }
-
-    private static string EnterVinCode()
-    {
-        Console.Write("Enter vinCode: ");
-
-        return Console.ReadLine();
     }
 }

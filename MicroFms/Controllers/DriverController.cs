@@ -1,4 +1,6 @@
-﻿using MicroFms.Services;
+﻿using MicroFms.Entities;
+using MicroFms.Services;
+using System.Xml.Linq;
 
 namespace MicroFms.Controllers;
 
@@ -10,10 +12,12 @@ public class DriverController
     private const string ShowDriversListCommand = "3";
 
     private readonly DriverService _driverService;
+    private readonly DriverVehicleRefService _driverVehicleRefService;
 
-    public DriverController(DriverService driverService)
+    public DriverController(DriverService driverService, DriverVehicleRefService driverVehicleRefService)
     {
         _driverService = driverService;
+        _driverVehicleRefService = driverVehicleRefService;
     }
 
     public void DisplayDriverMenu()
@@ -34,15 +38,15 @@ public class DriverController
             switch (userSelect)
             {
                 case AddDriverCommand:
-                    ExecuteOperation(_driverService.AddDriver);
+                    ExecuteOperation(AddDriver);
                     break;
 
                 case RemoveDriverCommand:
-                    ExecuteOperation(_driverService.RemoveDriver);
+                    ExecuteOperation(RemoveDriver);
                     break;
 
                 case ShowDriversListCommand:
-                    ExecuteOperation(_driverService.ShowDriverList);
+                    ExecuteOperation(ShowDriverList);
                     break;
 
                 case ExitCommand:
@@ -55,6 +59,20 @@ public class DriverController
         }
     }
 
+    private static string EnterFirstName()
+    {
+        Console.Write("Enter firstname: ");
+
+        return Console.ReadLine();
+    }
+
+    private static string EnterLastName()
+    {
+        Console.Write("Enter lastname: ");
+
+        return Console.ReadLine();
+    }
+
     private static void ShowContinueMessage()
     {
         Console.WriteLine("\nPress any key to continue");
@@ -64,6 +82,76 @@ public class DriverController
     private static void ShowUnknowCommandMessage()
     {
         Console.WriteLine("\nUnknow command");
+    }
+
+    private void AddDriver()
+    {
+        var firstName = EnterFirstName();
+        var lastName = EnterLastName();
+        var driver = _driverService.FindDriver(firstName, lastName);
+        if (driver != null)
+        {
+            Console.WriteLine($"Driver with firstName = {firstName} and lastName = {lastName} already exists in the driver list");
+        }
+        else
+        {
+            var newDriver = _driverService.AddDriver(firstName, lastName);
+            if (newDriver != null)
+            {
+                Console.WriteLine($"Driver {firstName} {lastName} successfull added to list");
+            }
+            else
+            {
+                Console.WriteLine($"\nEntered data is incorrected");
+            }
+        }
+    }
+
+    private void RemoveDriver()
+    {
+        if (_driverService.IsEmpty())
+        {
+            Console.WriteLine($"\nDriver list is empty\n");
+            return;
+        }
+
+        var firstName = EnterFirstName();
+        var lastName = EnterLastName();
+        var driver = _driverService.FindDriver(firstName, lastName);
+        if (driver != null)
+        {
+            _driverVehicleRefService.RemoveRecordByDriverId(driver.Id);
+            _driverService.RemoveDriver(driver.Id);
+            Console.WriteLine($"Driver with firstName = {firstName} and lastNeme = {lastName} is removed from driver list");
+        }
+        else
+        {
+            Console.WriteLine($"Driver with firstName = {firstName} and lastNeme = {lastName} was not found");
+        }
+    }
+
+    private void ShowDriverList()
+    {
+        var drivers = _driverService.GetDrivers();
+        var count = 1;
+
+        Console.WriteLine($"\nDrivers:\n");
+
+        if (drivers.Count == 0)
+        {
+            Console.WriteLine("\nDriver list is empty\n");
+        }
+        else
+        {
+            for (var i = 0; i < drivers.Count; i++)
+            {
+                if (!drivers[i].IsDeleted)
+                {
+                    Console.WriteLine($"{count}. {drivers[i].FirstName} {drivers[i].LastName}");
+                    count++;
+                }
+            }
+        }
     }
 
     private delegate void Operation();

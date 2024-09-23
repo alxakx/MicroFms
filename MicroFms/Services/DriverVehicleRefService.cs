@@ -4,7 +4,18 @@ namespace MicroFms.Services;
 
 public class DriverVehicleRefService
 {
-    private List<DriverVehicleRef> driverVehicleRefs = [];
+    private List<DriverVehicleRef> driverVehicleRefs = [
+        new DriverVehicleRef(0, 0, 0),
+        new DriverVehicleRef(1, 0, 2),
+        new DriverVehicleRef(2, 1, 1),
+        new DriverVehicleRef(3, 1, 3),
+        new DriverVehicleRef(4, 2, 2),
+        new DriverVehicleRef(5, 3, 4),
+        new DriverVehicleRef(6, 4, 5),
+        new DriverVehicleRef(7, 3, 6),
+        new DriverVehicleRef(8, 4, 6),
+        ];
+
     private DriverService _driverService;
     private VehicleService _vehicleService;
 
@@ -14,41 +25,14 @@ public class DriverVehicleRefService
         _vehicleService = vehicleService;
     }
 
-    public void ShowRecords()
+    public List<DriverVehicleRef> GetReferencesList()
     {
-        foreach (var record in driverVehicleRefs)
-        {
-            Console.WriteLine($"RecordId = {record.Id}; DriverID = {record.DrivetId}; VehicleId = {record.VehicleId}");
-        }
+        return driverVehicleRefs;
     }
 
-    public void AddRecord()
+    public void AddRecord(int driverId, int vehicleId)
     {
         var index = 0;
-
-        Console.Clear();
-
-        Console.WriteLine("Enter driverID: ");
-        var driverId = EnterId();
-
-        var isExists = IsDriverExists(_driverService.GetDrivers(), driverId);
-
-        if (!isExists)
-        {
-            Console.WriteLine($"Driver with Id={driverId} not exists");
-            return;
-        }
-
-        Console.WriteLine("Enter vehicleID: ");
-        var vehicleId = EnterId();
-
-        isExists = IsVehicleExists(_vehicleService.GetVehicles(), vehicleId);
-
-        if (!isExists)
-        {
-            Console.WriteLine($"Vehicle with Id={vehicleId} not exists");
-            return;
-        }
 
         if (driverVehicleRefs.Count > 0)
         {
@@ -58,68 +42,70 @@ public class DriverVehicleRefService
 
         var driverVehicleRef = new DriverVehicleRef(index, driverId, vehicleId);
         driverVehicleRefs.Add(driverVehicleRef);
-
-        Console.WriteLine($"Record for Driver Id={driverId} and Vehicle Id={vehicleId} added successfull");
     }
 
-    public void RemoveRecordByKey()
+    public bool IsVehicleInRefs(int vehicleId)
     {
-
+        return driverVehicleRefs.Where(record => record.VehicleId == vehicleId).Any();
     }
 
-    public void RemoveRecordByValue() 
+    public bool IsDriverInRefs(int driverId)
     {
-
+        return driverVehicleRefs.Where(record => record.DriverId == driverId).Any();
     }
 
-    public void UpdateRecordByKey()
+    public bool IsRecordIdInRefs(int recordId)
     {
-
+        return driverVehicleRefs.Where(record => record.Id == recordId).Any();
     }
 
-    public void UpdateRecordByValue()
+    public void RemoveRecordById(int id)
     {
-
-    }
-
-    private int EnterId()
-    {
-        var value = Console.ReadLine();
-        Console.WriteLine($"Entered '{value}'");
-
-        if (!int.TryParse(value, out int result))
+        var record = driverVehicleRefs.Where(record => record.Id == id).Select(record => record).FirstOrDefault();
+        if (record != null)
         {
-            Console.WriteLine("Invalid integer. Repeat the input: ");
-            EnterId();
+            driverVehicleRefs.Remove(record);
         }
-
-        return result;
     }
 
-    private bool IsDriverExists(List<Driver> drivers, int id)
+    public void RemoveRecordByDriverId(int id)
     {
-        foreach (var driver in drivers)
+        var records = driverVehicleRefs.Where(record => record.DriverId == id).Select(record => record).ToList();
+        if (records.Count != 0)
         {
-            if (driver.Id == id && driver.IsDeleted == false)
+            foreach (var record in records)
             {
-                return true;
+                driverVehicleRefs.Remove(record);
             }
         }
-
-
-        return false;
     }
 
-    private bool IsVehicleExists(List<Vehicle> vehicles, int id)
+    public void RemoveRecordByVehicleId(int id)
     {
-        foreach (var vehicle in vehicles)
+        var records = driverVehicleRefs.Where(record => record.VehicleId == id).Select(record => record).ToList();
+        if (records.Count != 0)
         {
-            if (vehicle.Id == id && vehicle.IsDeleted == false)
+            foreach (var record in records)
             {
-                return true;
+                driverVehicleRefs.Remove(record);
             }
         }
+    }
 
-        return false;
+    public bool IsDriverExists(int id)
+    {
+        var drivers = _driverService.GetDrivers();
+        return drivers.Where(driver => driver.Id == id && driver.IsDeleted == false).Any();
+    }
+
+    public bool IsVehicleExists(int id)
+    {
+        var vehicles = _vehicleService.GetVehicles();
+        return vehicles.Where(vehicle => vehicle.Id == id && vehicle.IsDeleted == false).Any();
+    }
+
+    public bool IsRecordExists(int driverId, int vehicleId)
+    {
+        return driverVehicleRefs.Where(record => record.DriverId == driverId && record.VehicleId == vehicleId).Any();
     }
 }
